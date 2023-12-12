@@ -1,0 +1,1 @@
+# poc-hapijs-sequelizejs-practice
