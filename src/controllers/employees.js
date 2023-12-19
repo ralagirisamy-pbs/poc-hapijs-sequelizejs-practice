@@ -1,24 +1,8 @@
-const fs = require("fs/promises");
-const path = require("path");
 const Boom = require("@hapi/boom");
 const { v4: uuid } = require("uuid");
 const { HTTP_STATUS } = require("../_data/HttpStatus");
 const validationService = require("../services/validation");
-
-const employeesFilePath = path.join(__dirname, "../_data/employees.json");
-
-/**
- * Read the json file and return the content.
- * @return {Array}
- */
-const getEmployeesData = async () => {
-	try {
-		const data = await fs.readFile(employeesFilePath, "utf-8");
-		return JSON.parse(data);
-	} catch (error) {
-		return [];
-	}
-};
+const { getEmployeesData, updateEmployeesData } = require("../services/file-access");
 
 /**
  * Get all Employees data.
@@ -26,8 +10,11 @@ const getEmployeesData = async () => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const getAllEmployees = async (request, h) => {
-	const employeesData = await getEmployeesData();
-	return h.response({ employees: employeesData });
+	const employees = await getEmployeesData();
+	if (employees.length === 0) {
+		throw Boom.notFound(`No Employee found`);
+	}
+	return h.response({ employees });
 };
 
 /**
@@ -39,7 +26,10 @@ const getEmployeeById = async (request, h) => {
 	const { id } = request.params;
 	const employeesData = await getEmployeesData();
 	const employee = employeesData.find((emp) => emp.id === id);
-	return h.response({ employee: employee || {} });
+	if (!employee) {
+		throw Boom.notFound(`Employee - ${id} not found`);
+	}
+	return h.response({ employee });
 };
 
 /**
@@ -53,10 +43,7 @@ const createEmployee = async (request, h) => {
 	formattedPayload["id"] = uuid();
 	const employeesData = await getEmployeesData();
 	employeesData.push(formattedPayload);
-	// Write the updated content into the file
-	await fs.writeFile(employeesFilePath, JSON.stringify(employeesData, null, 2), {
-		encoding: "utf-8"
-	});
+	await updateEmployeesData(employeesData);
 	return h
 		.response({
 			status: HTTP_STATUS.CREATED,
@@ -90,10 +77,7 @@ const updateEmployee = async (request, h) => {
 	if (!found) {
 		throw Boom.notFound(`Employee - ${id} not found`);
 	}
-	// Write the updated content into the file
-	await fs.writeFile(employeesFilePath, JSON.stringify(employeesData, null, 2), {
-		encoding: "utf-8"
-	});
+	await updateEmployeesData(employeesData);
 	return h
 		.response({
 			status: HTTP_STATUS.CREATED,
@@ -116,10 +100,7 @@ const deleteEmployee = async (request, h) => {
 		throw Boom.notFound(`Employee - ${id} not found`);
 	}
 	employeesData.splice(index, 1);
-	// Write the updated content into the file
-	await fs.writeFile(employeesFilePath, JSON.stringify(employeesData, null, 2), {
-		encoding: "utf-8"
-	});
+	await updateEmployeesData(employeesData);
 	return h
 		.response({
 			status: HTTP_STATUS.OK,
