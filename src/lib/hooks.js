@@ -7,7 +7,7 @@ const Boom = require("@hapi/boom");
  */
 const onRequestHandler = (request, h) => {
 	console.log(`Incoming request for ${request.method.toUpperCase()} ${request.path}`);
-	return h.continue;
+    return h.continue;
 };
 
 /**

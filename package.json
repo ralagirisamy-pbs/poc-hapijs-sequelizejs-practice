@@ -1,21 +1,47 @@
 {
-  "name": "poc-hapijs-sequelizejs-practice",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@hapi/boom": "^10.0.1",
-    "@hapi/hapi": "^21.3.2",
-    "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
-  }
+	"name": "poc-hapijs-sequelizejs-practice",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/index.js",
+	"scripts": {
+		"dev": "nodemon ./src/index.js",
+		"start": "node ./src/index.js",
+		"lint": "eslint src --ext .js --fix",
+		"precommit": "lint-staged",
+		"prepare": "husky install .config/husky"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@babel/eslint-parser": "^7.23.3",
+		"@hapi/boom": "^10.0.1",
+		"@hapi/hapi": "^21.3.2",
+		"uuid": "^9.0.1"
+	},
+	"devDependencies": {
+		"eslint": "^8.56.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-import": "^2.29.1",
+		"husky": "^8.0.3",
+		"lint-staged": "^15.2.0",
+		"nodemon": "^3.0.2",
+		"prettier": "^3.1.1"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run precommit"
+		}
+	},
+	"lint-staged": {
+		"./src/**/*.js": [
+			"eslint --fix",
+			"prettier --write"
+		],
+		"./*.js": [
+			"eslint --fix",
+			"prettier --write"
+		]
+	}
 }

@@ -1,19 +1,21 @@
+/* eslint-disable max-classes-per-file */
+
 /**
  * Class representing and holding details about errors when fetching an unavailable entity
  * @class NotFoundError
  * @extends {Error}
  */
 class NotFoundError extends Error {
-	/**
+  /**
 	 * Creates an instance of NotFoundError if the resource is not available.
 	 * @param {*} message An error message for user.
 	 * @memberof NotFoundError
 	 */
-	constructor(message) {
-		super(message);
-		this.name = "DataNotFoundError";
-		this.message = message;
-	}
+  constructor(message) {
+    super(message);
+    this.name = "DataNotFoundError";
+    this.message = message;
+  }
 }
 
 /**
@@ -22,20 +24,18 @@ class NotFoundError extends Error {
  * @extends {Error}
  */
 class ValidationError extends Error {
-	/**
-     * Creates an instance of ValidationError.
-     * It handles all the validation related to payload for POST or PUT operation. 
-     * @param {*} message A detailed error message where the validation failed.
-     * @memberof ValidationError
-     */
-    constructor(message) {
-		super(message);
-		this.name = "ValidationError";
-		this.message = message;
-	}
+  /**
+	 * Creates an instance of ValidationError.
+	 * It handles all the validation related to payload for POST or PUT operation.
+	 * @param {*} message A detailed error message where the validation failed.
+	 * @memberof ValidationError
+	 */
+  constructor(message) {
+    super(message);
+    this.name = "ValidationError";
+    this.message = message;
+  }
 }
-
-
 
 /**
  * The 'unhandledRejection' event is emitted whenever a Promise is rejected and
@@ -45,7 +45,7 @@ class ValidationError extends Error {
  * @param   {Object} promise  The rejected promise.
  */
 process.on("unhandledRejection", (reason, promise) => {
-  logger.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
+  console.error(`Unhandled Rejection at: ${promise} reason: ${reason}`);
 });
 
 /**
@@ -58,10 +58,10 @@ process.on("unhandledRejection", (reason, promise) => {
  * @param   {Object} origin  Indicates if the exception originates from an unhandled rejection or from an synchronous error
  */
 process.on("uncaughtException", (err, origin) => {
-  logger.error(`Caught exception: ${err}\n Exception origin: ${origin}`);
+  console.error(`Caught exception: ${err}\n Exception origin: ${origin}`);
 });
 
 module.exports = {
-	NotFoundError,
-	ValidationError
+  NotFoundError,
+  ValidationError
 };
