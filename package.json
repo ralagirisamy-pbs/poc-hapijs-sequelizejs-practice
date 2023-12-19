@@ -7,7 +7,7 @@
 		"dev": "nodemon ./src/index.js",
 		"start": "node ./src/index.js",
 		"lint": "eslint src --ext .js --fix",
-		"precommit": "npm run lint",
+		"precommit": "lint-staged",
 		"prepare": "husky install .config/husky"
 	},
 	"keywords": [],
