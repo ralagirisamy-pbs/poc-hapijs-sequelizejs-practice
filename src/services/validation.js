@@ -1,5 +1,5 @@
-const Boom = require("@hapi/boom");
 const { EMP_KEYLIST } = require("../_data/employee");
+const { ValidationError } = require("../lib/error");
 
 /**
  * Validate the payload for create employee API.
@@ -19,7 +19,7 @@ const formatEmpCreatePayload = (payload) => {
 		employeeData[key] = payload[key];
 	});
 	if (missingKeyList.length > 0) {
-		throw Boom.badRequest(
+		throw new ValidationError(
 			`Invalid payload: There are missing ${
 				missingKeyList.length > 1 ? "properties" : "property"
 			} - (${missingKeyList.join(", ")}).`
@@ -29,15 +29,15 @@ const formatEmpCreatePayload = (payload) => {
 	// If payload properties length doesn't match with EMP_KEYLIST.length,
 	// either new properties are there or some properties are missing.
 	if (Object.keys(payload).length < EMP_KEYLIST.length) {
-		throw Boom.badRequest(
-			`Invalid payload: Payload should contain all the following fields: ${EMP_KEYLIST}`
+		throw new ValidationError(
+			`Invalid payload: Payload should contain all the following fields: ${EMP_KEYLIST.join(", ")}`
 		);
 	}
 	// If payload properties length doesn't match with EMP_KEYLIST.length,
 	// either new properties are there or some properties are missing.
 	if (Object.keys(payload).length > EMP_KEYLIST.length) {
-		throw Boom.badRequest(
-			`Invalid payload: Payload contains unsupported fields. It should contain only the following fields: ${EMP_KEYLIST}`
+		throw new ValidationError(
+			`Invalid payload: Payload contains unsupported fields. It should contain only the following fields: ${EMP_KEYLIST.join(", ")}`
 		);
 	}
 	return employeeData;
@@ -60,7 +60,7 @@ const formatEmpUpdatePayload = (payload) => {
 		}
 	});
 	if (missingKeyList.length > 0) {
-		throw Boom.badRequest(
+		throw new ValidationError(
 			`Invalid payload: There are unsupported ${
 				missingKeyList.length > 1 ? "properties" : "property"
 			} - (${missingKeyList.join(", ")}).`

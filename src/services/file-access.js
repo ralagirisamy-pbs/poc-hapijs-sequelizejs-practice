@@ -1,6 +1,5 @@
 const fs = require("fs/promises");
 const path = require("path");
-const Boom = require("@hapi/boom");
 
 const employeesFilePath = path.join(__dirname, "../_data/employees.json");
 
@@ -28,7 +27,7 @@ const updateEmployeesData = async (data) => {
 		});
     } catch (error) {
         console.error(`Couldn't write to file ${employeesFilePath}. Error: `, error.message);
-        throw Boom.internal("Couldn't persist data. Try again later")
+        throw Error("Couldn't persist data. Try again later")
     }
 };
 

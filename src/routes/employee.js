@@ -1,4 +1,5 @@
 const EmployeesController = require("../controllers/employees");
+const Fallbacks = require("../controllers/fallback");
 
 exports.plugin = {
 	name: "employeeRouter",
@@ -17,7 +18,7 @@ exports.plugin = {
 				path: "/employee/{id}",
 				handler: EmployeesController.deleteEmployee
 			},
-			{ method: "*", path: "/*", handler: EmployeesController.sendNotFoundResponse }
+			{ method: "*", path: "/{p*}", handler: Fallbacks.notFound }
 		]);
 	}
 };

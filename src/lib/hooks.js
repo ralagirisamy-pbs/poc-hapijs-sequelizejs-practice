@@ -34,7 +34,14 @@ const onPreHandler = (request, h) => {
  */
 const onPreResponseHandler = (request, h) => {
 	if (Boom.isBoom(request.response)) {
-		throw request.response;
+		switch (request.response.name) {
+			case "DataNotFoundError":
+				throw Boom.notFound(request.response.message);
+			case "ValidationError":
+				throw Boom.badRequest(request.response.message);
+			default:
+				throw Boom.internal();
+		}
 	}
 	return h.continue;
 };

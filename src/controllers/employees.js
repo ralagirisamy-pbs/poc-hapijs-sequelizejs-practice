@@ -3,6 +3,7 @@ const { v4: uuid } = require("uuid");
 const { HTTP_STATUS } = require("../_data/HttpStatus");
 const validationService = require("../services/validation");
 const { getEmployeesData, updateEmployeesData } = require("../services/file-access");
+const { NotFoundError } = require("../lib/error");
 
 /**
  * Get all Employees data.
@@ -12,7 +13,7 @@ const { getEmployeesData, updateEmployeesData } = require("../services/file-acce
 const getAllEmployees = async (request, h) => {
 	const employees = await getEmployeesData();
 	if (employees.length === 0) {
-		throw Boom.notFound(`No Employee found`);
+		throw new NotFoundError(`No Employees found`);
 	}
 	return h.response({ employees });
 };
@@ -27,7 +28,7 @@ const getEmployeeById = async (request, h) => {
 	const employeesData = await getEmployeesData();
 	const employee = employeesData.find((emp) => emp.id === id);
 	if (!employee) {
-		throw Boom.notFound(`Employee - ${id} not found`);
+		throw new NotFoundError(`Employee - ${id} not found`);
 	}
 	return h.response({ employee });
 };
@@ -75,7 +76,7 @@ const updateEmployee = async (request, h) => {
 	});
 	// A flag to denote record is found and updated.
 	if (!found) {
-		throw Boom.notFound(`Employee - ${id} not found`);
+		throw new NotFoundError(`Employee - ${id} not found`);
 	}
 	await updateEmployeesData(employeesData);
 	return h
@@ -97,7 +98,7 @@ const deleteEmployee = async (request, h) => {
 	const employeesData = await getEmployeesData();
 	const index = employeesData.findIndex((emp) => emp.id === id);
 	if (index === -1) {
-		throw Boom.notFound(`Employee - ${id} not found`);
+		throw new NotFoundError(`Employee - ${id} not found`);
 	}
 	employeesData.splice(index, 1);
 	await updateEmployeesData(employeesData);
@@ -109,20 +110,10 @@ const deleteEmployee = async (request, h) => {
 		.code(HTTP_STATUS.OK);
 };
 
-/**
- * For any other routes, send .
- * @param {Object} request - Request Object with all input details
- * @param {Object} h - h Object with required functions to write server responses
- */
-const sendNotFoundResponse = (request, h) => {
-	throw Boom.notFound("API route not available");
-};
-
 module.exports = {
 	getAllEmployees,
 	getEmployeeById,
 	createEmployee,
 	updateEmployee,
-	deleteEmployee,
-	sendNotFoundResponse
+	deleteEmployee
 };
