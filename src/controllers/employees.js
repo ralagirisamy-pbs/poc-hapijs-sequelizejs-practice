@@ -128,10 +128,20 @@ const deleteEmployee = async (request, h) => {
 		.code(HTTP_STATUS.OK);
 };
 
+/**
+ * For any other routes, send .
+ * @param {Object} request - Request Object with all input details
+ * @param {Object} h - h Object with required functions to write server responses
+ */
+const sendNotFoundResponse = (request, h) => {
+	throw Boom.notFound("API route not available");
+};
+
 module.exports = {
 	getAllEmployees,
 	getEmployeeById,
 	createEmployee,
 	updateEmployee,
-	deleteEmployee
+	deleteEmployee,
+	sendNotFoundResponse
 };

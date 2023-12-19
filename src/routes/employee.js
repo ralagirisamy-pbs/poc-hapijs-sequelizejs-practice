@@ -16,7 +16,8 @@ exports.plugin = {
 				method: "DELETE",
 				path: "/employee/{id}",
 				handler: EmployeesController.deleteEmployee
-			}
+			},
+			{ method: "*", path: "/*", handler: EmployeesController.sendNotFoundResponse }
 		]);
 	}
 };
