@@ -6,8 +6,10 @@ const Boom = require("@hapi/boom");
  * @param {Object} h - h Object with required functions to write server responses
  */
 const onRequestHandler = (request, h) => {
-	console.log(`Incoming request for ${request.method.toUpperCase()} ${request.path}`);
-    return h.continue;
+  console.log(
+    `Incoming request for ${request.method.toUpperCase()} ${request.path}`,
+  );
+  return h.continue;
 };
 
 /**
@@ -16,15 +18,15 @@ const onRequestHandler = (request, h) => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const onPreHandler = (request, h) => {
-	try {
-		// Parse the incoming payload (will be in string) for POST and PUT methods.
-		if (["post", "put"].includes(request.method)) {
-			request.payload = JSON.parse(request.payload);
-		}
-		return h.continue;
-	} catch (error) {
-		throw Boom.badRequest("Invalid request payload");
-	}
+  try {
+    // Parse the incoming payload (will be in string) for POST and PUT methods.
+    if (["post", "put"].includes(request.method)) {
+      request.payload = JSON.parse(request.payload);
+    }
+    return h.continue;
+  } catch (error) {
+    throw Boom.badRequest("Invalid request payload");
+  }
 };
 
 /**
@@ -33,28 +35,28 @@ const onPreHandler = (request, h) => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const onPreResponseHandler = (request, h) => {
-	if (Boom.isBoom(request.response)) {
-		switch (request.response.name) {
-			case "DataNotFoundError":
-				throw Boom.notFound(request.response.message);
-			case "ValidationError":
-				throw Boom.badRequest(request.response.message);
-			default:
-				throw Boom.internal();
-		}
-	}
-	return h.continue;
+  if (Boom.isBoom(request.response)) {
+    switch (request.response.name) {
+      case "DataNotFoundError":
+        throw Boom.notFound(request.response.message);
+      case "ValidationError":
+        throw Boom.badRequest(request.response.message);
+      default:
+        throw Boom.internal();
+    }
+  }
+  return h.continue;
 };
 
 exports.plugin = {
-	name: "lifecycleHooks",
-	/**
-	 * A handler to bind lifecycle hooks to the server.
-	 * @param {*} server A Hapi server instance
-	 */
-	register: async (server) => {
-		server.ext("onRequest", onRequestHandler);
-		server.ext("onPreHandler", onPreHandler);
-		server.ext("onPreResponse", onPreResponseHandler);
-	}
+  name: "lifecycleHooks",
+  /**
+   * A handler to bind lifecycle hooks to the server.
+   * @param {*} server A Hapi server instance
+   */
+  register: async (server) => {
+    server.ext("onRequest", onRequestHandler);
+    server.ext("onPreHandler", onPreHandler);
+    server.ext("onPreResponse", onPreResponseHandler);
+  },
 };
