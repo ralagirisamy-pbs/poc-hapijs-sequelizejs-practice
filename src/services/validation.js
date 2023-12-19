@@ -2,8 +2,9 @@ const Boom = require("@hapi/boom");
 const { EMP_KEYLIST } = require("../_data/employee");
 
 /**
- * Validate and format the payload for create employee API.
+ * Validate the payload for create employee API.
  * @param {object} payload Object containing employee data to be created.
+ * @returns {Object} Payload for create Employee API.
  */
 const formatEmpCreatePayload = (payload) => {
 	let employeeData = {},
@@ -45,6 +46,7 @@ const formatEmpCreatePayload = (payload) => {
 /**
  * Validate and format the payload for update employee API.
  * @param {object} payload Object containing employee data to be updated.
+ * @returns {Object} Payload for update Employee API.
  */
 const formatEmpUpdatePayload = (payload) => {
 	let employeeData = {},

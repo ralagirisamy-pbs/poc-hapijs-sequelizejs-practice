@@ -3,6 +3,9 @@ const { DEFAULT_HOST, DEFAULT_PORT } = require("./src/_data/constants");
 
 let server;
 
+/**
+ * Create and start the Hapi Server.
+ */
 const startServer = async () => {
 	try {
 		// Creating Hapi Server instance
@@ -25,6 +28,9 @@ if (process.env.NODE_ENV !== "test") {
 	startServer();
 }
 
+/**
+ * Stop the Hapi Server.
+ */
 const stopServer = async () => {
 	try {
 		// Wait for 10 secs to shutdown existing connections.
