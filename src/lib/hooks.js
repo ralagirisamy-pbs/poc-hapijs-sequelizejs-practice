@@ -1,4 +1,6 @@
 const Boom = require("@hapi/boom");
+const { ValidationError } = require("./error");
+const { authHandler } = require("../services/authenticator");
 
 /**
  * This method is called on onRequest event (right after request is received).
@@ -25,7 +27,7 @@ const onPreHandler = (request, h) => {
     }
     return h.continue;
   } catch (error) {
-    throw Boom.badRequest("Invalid request payload");
+    throw new ValidationError("Invalid request payload");
   }
 };
 
@@ -41,6 +43,8 @@ const onPreResponseHandler = (request, h) => {
         throw Boom.notFound(request.response.message);
       case "ValidationError":
         throw Boom.badRequest(request.response.message);
+      case "UnauthorizedError":
+        throw Boom.unauthorized(request.response.message);
       default:
         throw Boom.internal();
     }
@@ -56,6 +60,7 @@ exports.plugin = {
    */
   register: async (server) => {
     server.ext("onRequest", onRequestHandler);
+    server.ext("onPreAuth", authHandler);
     server.ext("onPreHandler", onPreHandler);
     server.ext("onPreResponse", onPreResponseHandler);
   },

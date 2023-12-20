@@ -1,3 +1,4 @@
+require("dotenv").config();
 const hapi = require("@hapi/hapi");
 const { DEFAULT_HOST, DEFAULT_PORT } = require("./_data/constants");
 const EmployeeRoute = require("./routes/employee");
@@ -13,7 +14,7 @@ const startServer = async () => {
     // Creating Hapi Server instance
     server = hapi.server({
       port: process.env.PORT || DEFAULT_PORT,
-      host: process.env.HOST || DEFAULT_HOST
+      host: process.env.HOST || DEFAULT_HOST,
     });
     // Registering the required plugins for oute and lifecycle hooks.
     await server.register([EmployeeRoute, LifecycleHooks]);

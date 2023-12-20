@@ -7,10 +7,10 @@
  */
 class NotFoundError extends Error {
   /**
-	 * Creates an instance of NotFoundError if the resource is not available.
-	 * @param {*} message An error message for user.
-	 * @memberof NotFoundError
-	 */
+   * Creates an instance of NotFoundError if the resource is not available.
+   * @param {*} message An error message for user.
+   * @memberof NotFoundError
+   */
   constructor(message) {
     super(message);
     this.name = "DataNotFoundError";
@@ -25,14 +25,33 @@ class NotFoundError extends Error {
  */
 class ValidationError extends Error {
   /**
-	 * Creates an instance of ValidationError.
-	 * It handles all the validation related to payload for POST or PUT operation.
-	 * @param {*} message A detailed error message where the validation failed.
-	 * @memberof ValidationError
-	 */
+   * Creates an instance of ValidationError.
+   * It handles all the validation related to payload for POST or PUT operation.
+   * @param {*} message A detailed error message where the validation failed.
+   * @memberof ValidationError
+   */
   constructor(message) {
     super(message);
     this.name = "ValidationError";
+    this.message = message;
+  }
+}
+
+/**
+ * Class representing and holding details about payload validation errors
+ * @class ValidationError
+ * @extends {Error}
+ */
+class UnauthorizedError extends Error {
+  /**
+   * Creates an instance of UnauthorizedError.
+   * It is created on authentication failure.
+   * @param {*} message An error message for user reference.
+   * @memberof UnauthorizedError
+   */
+  constructor(message) {
+    super(message);
+    this.name = "UnauthorizedError";
     this.message = message;
   }
 }
@@ -63,5 +82,6 @@ process.on("uncaughtException", (err, origin) => {
 
 module.exports = {
   NotFoundError,
-  ValidationError
+  ValidationError,
+  UnauthorizedError,
 };
