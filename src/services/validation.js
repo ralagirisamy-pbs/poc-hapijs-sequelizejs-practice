@@ -22,22 +22,15 @@ const formatEmpCreatePayload = (payload) => {
     throw new ValidationError(
       `Invalid payload: There are missing ${
         missingKeyList.length > 1 ? "properties" : "property"
-      } - (${missingKeyList.join(", ")}).`
+      } - (${missingKeyList.join(", ")}).`,
     );
   }
-
-  // If payload properties length doesn't match with EMP_KEYLIST.length,
-  // either new properties are there or some properties are missing.
-  if (Object.keys(payload).length < EMP_KEYLIST.length) {
-    throw new ValidationError(
-      `Invalid payload: Payload should contain all the following fields: ${EMP_KEYLIST.join(", ")}`
-    );
-  }
-  // If payload properties length doesn't match with EMP_KEYLIST.length,
-  // either new properties are there or some properties are missing.
+  // If payload has some other properties, throw Validation error.
   if (Object.keys(payload).length > EMP_KEYLIST.length) {
     throw new ValidationError(
-      `Invalid payload: Payload contains unsupported fields. It should contain only the following fields: ${EMP_KEYLIST.join(", ")}`
+      `Invalid payload: Payload contains unsupported fields. It should contain only the following fields: ${EMP_KEYLIST.join(
+        ", ",
+      )}`,
     );
   }
   return employeeData;
@@ -63,7 +56,7 @@ const formatEmpUpdatePayload = (payload) => {
     throw new ValidationError(
       `Invalid payload: There are unsupported ${
         missingKeyList.length > 1 ? "properties" : "property"
-      } - (${missingKeyList.join(", ")}).`
+      } - (${missingKeyList.join(", ")}).`,
     );
   }
   return employeeData;
@@ -71,5 +64,5 @@ const formatEmpUpdatePayload = (payload) => {
 
 module.exports = {
   formatEmpCreatePayload,
-  formatEmpUpdatePayload
+  formatEmpUpdatePayload,
 };

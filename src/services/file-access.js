@@ -5,7 +5,7 @@ const employeesFilePath = path.join(__dirname, "../_data/employees.json");
 
 /**
  * Read the json file and return the content.
- * @return {Array} JSON Array of employees.
+ * @return {Promise<Array>} JSON Array of employees.
  */
 const getEmployeesData = async () => {
   try {
@@ -23,15 +23,18 @@ const getEmployeesData = async () => {
 const updateEmployeesData = async (data) => {
   try {
     await fs.writeFile(employeesFilePath, JSON.stringify(data, null, 2), {
-      encoding: "utf-8"
+      encoding: "utf-8",
     });
   } catch (error) {
-    console.error(`Couldn't write to file ${employeesFilePath}. Error: `, error.message);
-    throw Error("Couldn't persist data. Try again later")
+    console.error(
+      `Couldn't write to file ${employeesFilePath}. Error: `,
+      error.message,
+    );
+    throw Error("Couldn't persist data. Try again later");
   }
 };
 
 module.exports = {
   getEmployeesData,
-  updateEmployeesData
-}
+  updateEmployeesData,
+};

@@ -49,3 +49,7 @@ const stopServer = async () => {
 // Handling terimate signal event
 process.on("SIGINT", stopServer);
 process.on("SIGTERM", stopServer);
+
+module.exports = {
+  startServer,
+};

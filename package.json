@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "nodemon ./src/index.js",
 		"start": "node ./src/index.js",
+		"test": "lab -v --coverage-all",
 		"lint": "eslint src --ext .js --fix",
 		"precommit": "lint-staged",
 		"prepare": "husky install .config/husky"
@@ -22,6 +23,8 @@
 		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
+		"@hapi/code": "^9.0.3",
+		"@hapi/lab": "^25.1.3",
 		"eslint": "^8.56.0",
 		"eslint-config-airbnb-base": "^15.0.0",
 		"eslint-config-prettier": "^9.1.0",
