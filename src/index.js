@@ -23,9 +23,10 @@ const startServer = async () => {
     // Starting the server.
     await server.start();
     console.info(`Server started on ${JSON.stringify(server.info.uri)}`);
+    return server;
   } catch (error) {
     console.error("Error while starting Hapi server: ", error.message);
-    process.exit(1);
+    return process.exit(1);
   }
 };
 
