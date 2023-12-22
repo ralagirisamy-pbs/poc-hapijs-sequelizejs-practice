@@ -6,7 +6,7 @@ const { ValidationError } = require("../lib/error");
  * @param {object} payload Object containing employee data to be created.
  * @returns {Object} Payload for create Employee API.
  */
-const formatEmpCreatePayload = (payload) => {
+const formatPayloadForCreate = (payload) => {
   const employeeData = {};
   const missingKeyList = [];
   // Iterate through EMP_KEYLIST (employee properties) and check if payload has the property.
@@ -41,7 +41,7 @@ const formatEmpCreatePayload = (payload) => {
  * @param {object} payload Object containing employee data to be updated.
  * @returns {Object} Payload for update Employee API.
  */
-const formatEmpUpdatePayload = (payload) => {
+const formatPayloadForUpdate = (payload) => {
   const employeeData = {};
   const missingKeyList = [];
   // Check if all the payload properties are valid. If not, send 400 bad request error.
@@ -63,6 +63,6 @@ const formatEmpUpdatePayload = (payload) => {
 };
 
 module.exports = {
-  formatEmpCreatePayload,
-  formatEmpUpdatePayload,
+  formatPayloadForCreate,
+  formatPayloadForUpdate,
 };
