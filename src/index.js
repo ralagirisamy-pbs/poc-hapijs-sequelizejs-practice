@@ -1,6 +1,6 @@
 require("dotenv").config();
 const hapi = require("@hapi/hapi");
-const { DEFAULT_HOST, DEFAULT_PORT } = require("./_data/constants");
+const { DEFAULT_HOST, DEFAULT_PORT } = require("./lib/constants");
 const EmployeeRoute = require("./routes/employee");
 const LifecycleHooks = require("./lib/hooks");
 

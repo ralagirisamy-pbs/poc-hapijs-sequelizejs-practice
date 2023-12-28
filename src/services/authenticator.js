@@ -1,6 +1,11 @@
 const jwt = require("jsonwebtoken");
 const { UnauthorizedError } = require("../lib/error");
 
+/**
+ * Verify and extract the jwt token.
+ * @param {String} authorization Authorization header
+ * @return {Promise<Object>} Decrypted payload of the token
+ */
 const extractToken = (authorization) => {
   try {
     // Extract token from the bearer header.

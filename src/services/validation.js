@@ -1,4 +1,4 @@
-const { EMP_KEYLIST } = require("../_data/employee");
+const { EMP_KEYLIST } = require("../lib/constants");
 const { ValidationError } = require("../lib/error");
 
 /**

@@ -14,7 +14,7 @@ const authToken = {
 /**
  * Invoke GET /employee and return the response payload
  * @param {*} server Hapi.js Server instance.
- * @return {Object} Response payload containing employees record. 
+ * @return {Promise<Object>} Response payload containing employees record. 
  */
 const getEmployeesValid = async (server) => {
 	const options = {

@@ -1,5 +1,5 @@
 const { v4: uuid } = require("uuid");
-const { HTTP_STATUS } = require("../_data/HttpStatus");
+const { HTTP_STATUS } = require("../lib/constants");
 const validationService = require("../services/validation");
 const {
   getEmployeesData,
