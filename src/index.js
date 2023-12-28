@@ -1,6 +1,6 @@
 require("dotenv").config();
 const hapi = require("@hapi/hapi");
-const { DEFAULT_HOST, DEFAULT_PORT } = require("./_data/constants");
+const { DEFAULT_HOST, DEFAULT_PORT } = require("./lib/constants");
 const EmployeeRoute = require("./routes/employee");
 const LifecycleHooks = require("./lib/hooks");
 
@@ -23,9 +23,10 @@ const startServer = async () => {
     // Starting the server.
     await server.start();
     console.info(`Server started on ${JSON.stringify(server.info.uri)}`);
+    return server;
   } catch (error) {
     console.error("Error while starting Hapi server: ", error.message);
-    process.exit(1);
+    return process.exit(1);
   }
 };
 
@@ -49,3 +50,7 @@ const stopServer = async () => {
 // Handling terimate signal event
 process.on("SIGINT", stopServer);
 process.on("SIGTERM", stopServer);
+
+module.exports = {
+  startServer,
+};

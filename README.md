@@ -1,6 +1,6 @@
 # Learning Hapi.js & Sequelize.js
 
-Created a simple Hapi.js server application to learn the same and Sequelize.js.
+A simple Hapi.js server application to learn the fundamental concepts of Hapi.js and Sequelize.js.
 
 ## Scope of the learning
 

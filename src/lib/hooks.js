@@ -23,7 +23,11 @@ const onPreHandler = (request, h) => {
   try {
     // Parse the incoming payload (will be in string) for POST and PUT methods.
     if (["post", "put"].includes(request.method)) {
-      request.payload = JSON.parse(request.payload);
+      if (typeof request.payload === "string") {
+        request.payload = JSON.parse(request.payload);
+      } else if (typeof request.payload !== "object") {
+        throw Error();
+      }
     }
     return h.continue;
   } catch (error) {

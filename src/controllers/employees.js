@@ -1,7 +1,10 @@
 const { v4: uuid } = require("uuid");
-const { HTTP_STATUS } = require("../_data/HttpStatus");
+const { HTTP_STATUS } = require("../lib/constants");
 const validationService = require("../services/validation");
-const { getEmployeesData, updateEmployeesData } = require("../services/file-access");
+const {
+  getEmployeesData,
+  updateEmployeesData,
+} = require("../services/file-access");
 const { NotFoundError } = require("../lib/error");
 
 /**
@@ -14,7 +17,12 @@ const getAllEmployees = async (request, h) => {
   if (employees.length === 0) {
     throw new NotFoundError(`No Employees found`);
   }
-  return h.response({ employees });
+  return h
+    .response({
+      statusCode: HTTP_STATUS.OK,
+      data: employees,
+    })
+    .code(HTTP_STATUS.OK);
 };
 
 /**
@@ -29,7 +37,9 @@ const getEmployeeById = async (request, h) => {
   if (!employee) {
     throw new NotFoundError(`Employee - ${id} not found`);
   }
-  return h.response({ employee });
+  return h
+    .response({ statusCode: HTTP_STATUS.OK, data: employee })
+    .code(HTTP_STATUS.OK);
 };
 
 /**
@@ -38,17 +48,17 @@ const getEmployeeById = async (request, h) => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const createEmployee = async (request, h) => {
-  const {payload} = request;
-  const formattedPayload = validationService.formatEmpCreatePayload(payload);
+  const { payload } = request;
+  const formattedPayload = validationService.formatPayloadForCreate(payload);
   formattedPayload.id = uuid();
   const employeesData = await getEmployeesData();
   employeesData.push(formattedPayload);
   await updateEmployeesData(employeesData);
   return h
     .response({
-      status: HTTP_STATUS.CREATED,
+      statusCode: HTTP_STATUS.CREATED,
       message: "Employee created successfully",
-      data: formattedPayload
+      data: formattedPayload,
     })
     .code(HTTP_STATUS.CREATED);
 };
@@ -59,9 +69,9 @@ const createEmployee = async (request, h) => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const updateEmployee = async (request, h) => {
-  const {payload} = request;
+  const { payload } = request;
   const { id } = request.params;
-  const formattedPayload = validationService.formatEmpUpdatePayload(payload);
+  const formattedPayload = validationService.formatPayloadForUpdate(payload);
   const employeesData = await getEmployeesData();
   let found = false;
   employeesData.forEach((employee) => {
@@ -80,9 +90,9 @@ const updateEmployee = async (request, h) => {
   await updateEmployeesData(employeesData);
   return h
     .response({
-      status: HTTP_STATUS.CREATED,
+      statusCode: HTTP_STATUS.CREATED,
       message: "Employee updated successfully",
-      data: formattedPayload
+      data: formattedPayload,
     })
     .code(HTTP_STATUS.CREATED);
 };
@@ -103,8 +113,8 @@ const deleteEmployee = async (request, h) => {
   await updateEmployeesData(employeesData);
   return h
     .response({
-      status: HTTP_STATUS.OK,
-      message: "Employee deleted successfully"
+      statusCode: HTTP_STATUS.OK,
+      message: "Employee deleted successfully",
     })
     .code(HTTP_STATUS.OK);
 };
@@ -114,5 +124,5 @@ module.exports = {
   getEmployeeById,
   createEmployee,
   updateEmployee,
-  deleteEmployee
+  deleteEmployee,
 };

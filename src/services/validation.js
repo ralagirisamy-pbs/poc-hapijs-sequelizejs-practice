@@ -1,4 +1,4 @@
-const { EMP_KEYLIST } = require("../_data/employee");
+const { EMP_KEYLIST } = require("../lib/constants");
 const { ValidationError } = require("../lib/error");
 
 /**
@@ -6,7 +6,7 @@ const { ValidationError } = require("../lib/error");
  * @param {object} payload Object containing employee data to be created.
  * @returns {Object} Payload for create Employee API.
  */
-const formatEmpCreatePayload = (payload) => {
+const formatPayloadForCreate = (payload) => {
   const employeeData = {};
   const missingKeyList = [];
   // Iterate through EMP_KEYLIST (employee properties) and check if payload has the property.
@@ -22,22 +22,15 @@ const formatEmpCreatePayload = (payload) => {
     throw new ValidationError(
       `Invalid payload: There are missing ${
         missingKeyList.length > 1 ? "properties" : "property"
-      } - (${missingKeyList.join(", ")}).`
+      } - (${missingKeyList.join(", ")}).`,
     );
   }
-
-  // If payload properties length doesn't match with EMP_KEYLIST.length,
-  // either new properties are there or some properties are missing.
-  if (Object.keys(payload).length < EMP_KEYLIST.length) {
-    throw new ValidationError(
-      `Invalid payload: Payload should contain all the following fields: ${EMP_KEYLIST.join(", ")}`
-    );
-  }
-  // If payload properties length doesn't match with EMP_KEYLIST.length,
-  // either new properties are there or some properties are missing.
+  // If payload has some other properties, throw Validation error.
   if (Object.keys(payload).length > EMP_KEYLIST.length) {
     throw new ValidationError(
-      `Invalid payload: Payload contains unsupported fields. It should contain only the following fields: ${EMP_KEYLIST.join(", ")}`
+      `Invalid payload: Payload contains unsupported fields. It should contain only the following fields: ${EMP_KEYLIST.join(
+        ", ",
+      )}`,
     );
   }
   return employeeData;
@@ -48,7 +41,7 @@ const formatEmpCreatePayload = (payload) => {
  * @param {object} payload Object containing employee data to be updated.
  * @returns {Object} Payload for update Employee API.
  */
-const formatEmpUpdatePayload = (payload) => {
+const formatPayloadForUpdate = (payload) => {
   const employeeData = {};
   const missingKeyList = [];
   // Check if all the payload properties are valid. If not, send 400 bad request error.
@@ -63,13 +56,13 @@ const formatEmpUpdatePayload = (payload) => {
     throw new ValidationError(
       `Invalid payload: There are unsupported ${
         missingKeyList.length > 1 ? "properties" : "property"
-      } - (${missingKeyList.join(", ")}).`
+      } - (${missingKeyList.join(", ")}).`,
     );
   }
   return employeeData;
 };
 
 module.exports = {
-  formatEmpCreatePayload,
-  formatEmpUpdatePayload
+  formatPayloadForCreate,
+  formatPayloadForUpdate,
 };
