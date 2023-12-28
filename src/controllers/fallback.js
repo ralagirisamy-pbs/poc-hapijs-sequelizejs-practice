@@ -1,14 +1,12 @@
 const { NotFoundError } = require("../lib/error");
 
 /**
- * For any other routes, send .
- * @param {Object} request - Request Object with all input details
- * @param {Object} h - h Object with required functions to write server responses
+ * Wildcard route handler.
  */
 const notFound = () => {
   throw new NotFoundError("API route not available");
 };
 
 module.exports = {
-  notFound
+  notFound,
 };

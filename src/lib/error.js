@@ -38,8 +38,8 @@ class ValidationError extends Error {
 }
 
 /**
- * Class representing and holding details about payload validation errors
- * @class ValidationError
+ * Class representing and holding details about unauthenticated requests.
+ * @class UnauthorizedError
  * @extends {Error}
  */
 class UnauthorizedError extends Error {
