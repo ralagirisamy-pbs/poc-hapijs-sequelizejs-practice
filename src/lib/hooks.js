@@ -50,7 +50,7 @@ const onPreResponseHandler = (request, h) => {
       case "UnauthorizedError":
         throw Boom.unauthorized(request.response.message);
       default:
-        throw Boom.internal();
+        throw Boom.internal(request.response.message);
     }
   }
   return h.continue;

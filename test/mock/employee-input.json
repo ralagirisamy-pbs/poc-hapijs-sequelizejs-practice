@@ -26,6 +26,7 @@
 		"hobby": "sample"
 	},
 	"invalidId": "invalid-id",
+	"nonexistentId": 9999,
 	"authToken": {
 		"valid": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJzY29wZSI6ImFsbCJ9.yBvyRs6xaw7EhKNSmdorAGrg1PrH0SzMCgKx36hXfNw",
 		"invalid": "some-invalid-token"

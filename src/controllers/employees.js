@@ -1,11 +1,7 @@
-const { v4: uuid } = require("uuid");
 const { HTTP_STATUS } = require("../lib/constants");
 const validationService = require("../services/validation");
-const {
-  getEmployeesData,
-  updateEmployeesData,
-} = require("../services/file-access");
-const { NotFoundError } = require("../lib/error");
+const { NotFoundError, ValidationError } = require("../lib/error");
+const employeeDbService = require("../services/db/employees");
 
 /**
  * Get all Employees data.
@@ -13,16 +9,27 @@ const { NotFoundError } = require("../lib/error");
  * @param {Object} h - h Object with required functions to write server responses
  */
 const getAllEmployees = async (request, h) => {
-  const employees = await getEmployeesData();
-  if (employees.length === 0) {
-    throw new NotFoundError(`No Employees found`);
+  try {
+    const models = request.getDb().getModels();
+    const employeeRecords = await employeeDbService.getEmployees(
+      models.Employee,
+    );
+    if (employeeRecords.length === 0) {
+      throw new NotFoundError(`No Employees found`);
+    }
+    return h
+      .response({
+        statusCode: HTTP_STATUS.OK,
+        data: employeeRecords,
+      })
+      .code(HTTP_STATUS.OK);
+  } catch (error) {
+    console.error("Error caught at getAllEmployees:", error);
+    if (error.name) {
+      throw error;
+    }
+    throw Error("Internal Server error: Couldn't get the employees");
   }
-  return h
-    .response({
-      statusCode: HTTP_STATUS.OK,
-      data: employees,
-    })
-    .code(HTTP_STATUS.OK);
 };
 
 /**
@@ -31,15 +38,34 @@ const getAllEmployees = async (request, h) => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const getEmployeeById = async (request, h) => {
-  const { id } = request.params;
-  const employeesData = await getEmployeesData();
-  const employee = employeesData.find((emp) => emp.id === id);
-  if (!employee) {
-    throw new NotFoundError(`Employee - ${id} not found`);
+  const { params } = request;
+  try {
+    const models = request.getDb().getModels();
+    const id = parseInt(params.id, 10);
+    if (!id) {
+      throw new ValidationError(
+        `Validation failed: Invalid employee id - ${params.id}`,
+      );
+    }
+    const employeeRecord = await employeeDbService.getEmployeeById(
+      id,
+      models.Employee,
+    );
+    if (!employeeRecord) {
+      throw new NotFoundError(`Employee - ${id} not found`);
+    }
+    return h
+      .response({ statusCode: HTTP_STATUS.OK, data: employeeRecord })
+      .code(HTTP_STATUS.OK);
+  } catch (error) {
+    console.error("Error caught at getEmployeeById:", error);
+    if (error.name) {
+      throw error;
+    }
+    throw Error(
+      `Internal Server error: Couldn't get the employee - ${params.id}`,
+    );
   }
-  return h
-    .response({ statusCode: HTTP_STATUS.OK, data: employee })
-    .code(HTTP_STATUS.OK);
 };
 
 /**
@@ -48,19 +74,28 @@ const getEmployeeById = async (request, h) => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const createEmployee = async (request, h) => {
-  const { payload } = request;
-  const formattedPayload = validationService.formatPayloadForCreate(payload);
-  formattedPayload.id = uuid();
-  const employeesData = await getEmployeesData();
-  employeesData.push(formattedPayload);
-  await updateEmployeesData(employeesData);
-  return h
-    .response({
-      statusCode: HTTP_STATUS.CREATED,
-      message: "Employee created successfully",
-      data: formattedPayload,
-    })
-    .code(HTTP_STATUS.CREATED);
+  try {
+    const { payload } = request;
+    const formattedPayload = validationService.formatPayloadForCreate(payload);
+    const models = request.getDb().getModels();
+    const employeeRecord = await employeeDbService.createEmployee(
+      formattedPayload,
+      models.Employee,
+    );
+    return h
+      .response({
+        statusCode: HTTP_STATUS.CREATED,
+        message: "Employee created successfully",
+        data: employeeRecord,
+      })
+      .code(HTTP_STATUS.CREATED);
+  } catch (error) {
+    console.error("Error caught at createEmployee:", error);
+    if (error.name) {
+      throw error;
+    }
+    throw Error(`Internal Server error: Couldn't create the employee`);
+  }
 };
 
 /**
@@ -69,32 +104,41 @@ const createEmployee = async (request, h) => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const updateEmployee = async (request, h) => {
-  const { payload } = request;
-  const { id } = request.params;
-  const formattedPayload = validationService.formatPayloadForUpdate(payload);
-  const employeesData = await getEmployeesData();
-  let found = false;
-  employeesData.forEach((employee) => {
-    if (id === employee.id) {
-      Object.keys(formattedPayload).forEach((key) => {
-        employee[key] = formattedPayload[key];
-      });
-      // Set the flag true
-      found = true;
+  const { params } = request;
+  try {
+    const { payload } = request;
+    const id = parseInt(params.id, 10);
+    if (!id) {
+      throw new ValidationError(
+        `Validation failed: Invalid employee id - ${params.id}`,
+      );
     }
-  });
-  // A flag to denote record is found and updated.
-  if (!found) {
-    throw new NotFoundError(`Employee - ${id} not found`);
+    const formattedPayload = validationService.formatPayloadForUpdate(payload);
+    const models = request.getDb().getModels();
+    const response = await employeeDbService.updateEmployee(
+      id,
+      formattedPayload,
+      models.Employee,
+    );
+    if (response[0] === 0) {
+      throw new NotFoundError(`Employee - ${params.id} not found`);
+    }
+    return h
+      .response({
+        statusCode: HTTP_STATUS.CREATED,
+        message: "Employee updated successfully",
+        data: response[1],
+      })
+      .code(HTTP_STATUS.CREATED);
+  } catch (error) {
+    console.error("Error caught at updateEmployee:", error);
+    if (error.name) {
+      throw error;
+    }
+    throw Error(
+      `Internal Server error: Couldn't update the employee - ${params.id}`,
+    );
   }
-  await updateEmployeesData(employeesData);
-  return h
-    .response({
-      statusCode: HTTP_STATUS.CREATED,
-      message: "Employee updated successfully",
-      data: formattedPayload,
-    })
-    .code(HTTP_STATUS.CREATED);
 };
 
 /**
@@ -103,20 +147,37 @@ const updateEmployee = async (request, h) => {
  * @param {Object} h - h Object with required functions to write server responses
  */
 const deleteEmployee = async (request, h) => {
-  const { id } = request.params;
-  const employeesData = await getEmployeesData();
-  const index = employeesData.findIndex((emp) => emp.id === id);
-  if (index === -1) {
-    throw new NotFoundError(`Employee - ${id} not found`);
+  const { params } = request;
+  try {
+    const models = request.getDb().getModels();
+    const id = parseInt(params.id, 10);
+    if (!id) {
+      throw new ValidationError(
+        `Validation failed: Invalid employee id - ${params.id}`,
+      );
+    }
+    const response = await employeeDbService.deleteEmployee(
+      id,
+      models.Employee,
+    );
+    if (response === 0) {
+      throw new NotFoundError(`Employee - ${params.id} not found`);
+    }
+    return h
+      .response({
+        statusCode: HTTP_STATUS.OK,
+        message: "Employee deleted successfully",
+      })
+      .code(HTTP_STATUS.OK);
+  } catch (error) {
+    console.error("Error caught at deleteEmployee:", error);
+    if (error.name) {
+      throw error;
+    }
+    throw Error(
+      `Internal Server error: Couldn't delete the employee - ${params.id}`,
+    );
   }
-  employeesData.splice(index, 1);
-  await updateEmployeesData(employeesData);
-  return h
-    .response({
-      statusCode: HTTP_STATUS.OK,
-      message: "Employee deleted successfully",
-    })
-    .code(HTTP_STATUS.OK);
 };
 
 module.exports = {

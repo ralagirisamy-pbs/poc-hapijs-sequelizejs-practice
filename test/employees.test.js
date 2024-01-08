@@ -42,7 +42,7 @@ describe("Employee module (create & get all employee)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.noAuthToken);
 	});
 	it("POST Employee - Invalid credentials", async () => {
@@ -55,7 +55,7 @@ describe("Employee module (create & get all employee)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.invalidAuthToken);
 	});
 	it("POST Employee - Valid credentials", async () => {
@@ -82,7 +82,7 @@ describe("Employee module (create & get all employee)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(400);
-		expect(payload?.error).to.be.string().equal("Bad Request");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.BadRequest);
 		expect(payload?.message)
 			.to.be.string()
 			.equal(EmployeeOutputData.message.createEmployeeMissingFields);
@@ -97,7 +97,7 @@ describe("Employee module (create & get all employee)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(400);
-		expect(payload?.error).to.be.string().equal("Bad Request");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.BadRequest);
 		expect(payload?.message)
 			.to.be.string()
 			.equal(EmployeeOutputData.message.createEmployeeUnsupportedFields);
@@ -112,7 +112,7 @@ describe("Employee module (create & get all employee)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.noAuthToken);
 	});
 	it("GET Employees - Invalid credentials", async () => {
@@ -124,7 +124,7 @@ describe("Employee module (create & get all employee)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.invalidAuthToken);
 	});
 	it("GET Employees - Valid credentials", async () => {
@@ -142,7 +142,7 @@ describe("Employee module (create & get all employee)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(404);
-		expect(payload?.error).to.be.string().equal("Not Found");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.NotFound);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.notFoundRoute);
 	});
 	after(() => {
@@ -170,7 +170,7 @@ describe("Employee module (update, delete & get by ID)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.noAuthToken);
 	});
 	it("PUT Employee - Invalid credentials", async () => {
@@ -183,7 +183,7 @@ describe("Employee module (update, delete & get by ID)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.invalidAuthToken);
 	});
 	it("PUT Employee - Valid credentials", async () => {
@@ -210,7 +210,7 @@ describe("Employee module (update, delete & get by ID)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(400);
-		expect(payload?.error).to.be.string().equal("Bad Request");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.BadRequest);
 		expect(payload?.message)
 			.to.be.string()
 			.equal(EmployeeOutputData.message.updateEmployeeUnsupportedFields);
@@ -224,8 +224,23 @@ describe("Employee module (update, delete & get by ID)", () => {
 		};
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
+		expect(payload?.statusCode).to.be.number().equal(400);
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.BadRequest);
+		expect(payload?.message)
+			.to.be.string()
+			.equal(EmployeeOutputData.message.invalidEmployee);
+	});
+	it("PUT Employee - Non existent employee", async () => {
+		const options = {
+			method: "PUT",
+			url: `/employee/${EmployeeInputData.nonexistentId}`,
+			headers: { Authorization: authToken.valid },
+			payload: EmployeeInputData.putEmployeeValid
+		};
+		const response = await server.inject(options);
+		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(404);
-		expect(payload?.error).to.be.string().equal("Not Found");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.NotFound);
 		expect(payload?.message)
 			.to.be.string()
 			.equal(EmployeeOutputData.message.employeeNotFound);
@@ -240,7 +255,7 @@ describe("Employee module (update, delete & get by ID)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.noAuthToken);
 	});
 	it("GET Employee - Invalid credentials", async () => {
@@ -252,7 +267,7 @@ describe("Employee module (update, delete & get by ID)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.invalidAuthToken);
 	});
 	it("GET Employee - Valid credentials", async () => {
@@ -274,8 +289,20 @@ describe("Employee module (update, delete & get by ID)", () => {
 		};
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
+		expect(payload?.statusCode).to.be.number().equal(400);
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.BadRequest);
+		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.invalidEmployee);
+	});
+	it("GET Employee - Non existent employee", async () => {
+		const options = {
+			method: "GET",
+			url: `/employee/${EmployeeInputData.nonexistentId}`,
+			headers: { Authorization: authToken.valid }
+		};
+		const response = await server.inject(options);
+		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(404);
-		expect(payload?.error).to.be.string().equal("Not Found");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.NotFound);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.employeeNotFound);
 	});
 	// DELETE /employee/{id} method
@@ -288,7 +315,7 @@ describe("Employee module (update, delete & get by ID)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.noAuthToken);
 	});
 	it("DELETE Employee - Invalid credentials", async () => {
@@ -300,7 +327,7 @@ describe("Employee module (update, delete & get by ID)", () => {
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(401);
-		expect(payload?.error).to.be.string().equal("Unauthorized");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.invalidAuthToken);
 	});
 	it("DELETE Employee - Invalid employee id", async () => {
@@ -311,8 +338,20 @@ describe("Employee module (update, delete & get by ID)", () => {
 		};
 		const response = await server.inject(options);
 		const payload = JSON.parse(response.payload || {});
+		expect(payload?.statusCode).to.be.number().equal(400);
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.BadRequest);
+		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.invalidEmployee);
+	});
+	it("DELETE Employee - Non existent employee", async () => {
+		const options = {
+			method: "DELETE",
+			url: `/employee/${EmployeeInputData.nonexistentId}`,
+			headers: { Authorization: authToken.valid }
+		};
+		const response = await server.inject(options);
+		const payload = JSON.parse(response.payload || {});
 		expect(payload?.statusCode).to.be.number().equal(404);
-		expect(payload?.error).to.be.string().equal("Not Found");
+		expect(payload?.error).to.be.string().equal(EmployeeOutputData.name.NotFound);
 		expect(payload?.message).to.be.string().equal(EmployeeOutputData.message.employeeNotFound);
 	});
 	it("DELETE Employee - Valid credentials", async () => {
