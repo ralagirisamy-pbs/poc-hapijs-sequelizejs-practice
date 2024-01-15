@@ -12,20 +12,34 @@ class Task extends Model {
           primaryKey: true,
           field: "id",
         },
-        name: {
+        title: {
           type: DataTypes.STRING,
           allowNull: false,
-          field: "name",
+          field: "title",
         },
         description: {
           type: DataTypes.STRING(1234),
           allowNull: true,
           field: "description",
         },
-        assignee: {
-          type: DataTypes.ARRAY(DataTypes.BIGINT),
-          defaultValue: [],
-          field: "assignee",
+        priority: {
+          type: DataTypes.ENUM("Low", "Medium", "High"),
+          field: "priority",
+          default: "Low",
+        },
+        labels: {
+          type: DataTypes.ARRAY(DataTypes.STRING),
+          field: "labels",
+          default: [],
+        },
+        assigned_employee_id: {
+          type: DataTypes.BIGINT,
+          allowNull: true,
+          field: "assigned_employee_id",
+          references: {
+            model: "employee",
+            key: "id",
+          },
         },
       },
       {
@@ -34,6 +48,13 @@ class Task extends Model {
         timestamps: true,
         createdAt: "createdatetime",
         updatedAt: "updatedatetime",
+        indexes: [
+          {
+            name: "task_pk",
+            unique: true,
+            fields: [{ name: "id" }],
+          },
+        ],
       },
     );
   }

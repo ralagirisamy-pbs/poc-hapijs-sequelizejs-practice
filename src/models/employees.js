@@ -2,7 +2,7 @@ const { Model } = require("sequelize");
 
 class Employee extends Model {
   static init(sequelize, DataTypes) {
-    return sequelize.define(
+    const employee = sequelize.define(
       "Employee",
       {
         id: {
@@ -32,11 +32,6 @@ class Employee extends Model {
           allowNull: false,
           field: "experience",
         },
-        tasks: {
-          type: DataTypes.ARRAY(DataTypes.BIGINT),
-          defaultValue: [],
-          field: "tasks",
-        },
       },
       {
         tableName: "employee",
@@ -44,8 +39,22 @@ class Employee extends Model {
         timestamps: true,
         createdAt: "createdatetime",
         updatedAt: "updatedatetime",
+        indexes: [
+          {
+            name: "employee_pk",
+            unique: true,
+            fields: [{ name: "id" }],
+          },
+        ],
       },
     );
+    employee.associate = (models) => {
+      models.Employee.hasMany(models.Task, {
+        as: "tasks",
+        foreignKey: "assigned_employee_id",
+      });
+    };
+    return employee;
   }
 }
 

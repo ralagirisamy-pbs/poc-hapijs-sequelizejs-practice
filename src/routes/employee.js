@@ -1,24 +1,38 @@
 const EmployeesController = require("../controllers/employees");
-const Fallbacks = require("../controllers/fallback");
 
 exports.plugin = {
   name: "employeeRouter",
   /**
-	 * A handler to bind routes to the server.
-	 * @param {*} server A Hapi server instance
-	 */
+   * A handler to bind routes to the server.
+   * @param {*} server A Hapi server instance
+   */
   register: async (server) => {
     server.route([
-      { method: "GET", path: "/employees", handler: EmployeesController.getAllEmployees },
-      { method: "GET", path: "/employee/{id}", handler: EmployeesController.getEmployeeById },
-      { method: "POST", path: "/employee", handler: EmployeesController.createEmployee },
-      { method: "PUT", path: "/employee/{id}", handler: EmployeesController.updateEmployee },
+      {
+        method: "GET",
+        path: "/employees",
+        handler: EmployeesController.getAllEmployees,
+      },
+      {
+        method: "GET",
+        path: "/employee/{id}",
+        handler: EmployeesController.getEmployeeById,
+      },
+      {
+        method: "POST",
+        path: "/employee",
+        handler: EmployeesController.createEmployee,
+      },
+      {
+        method: "PUT",
+        path: "/employee/{id}",
+        handler: EmployeesController.updateEmployee,
+      },
       {
         method: "DELETE",
         path: "/employee/{id}",
-        handler: EmployeesController.deleteEmployee
+        handler: EmployeesController.deleteEmployee,
       },
-      { method: "*", path: "/{p*}", handler: Fallbacks.notFound }
     ]);
-  }
+  },
 };

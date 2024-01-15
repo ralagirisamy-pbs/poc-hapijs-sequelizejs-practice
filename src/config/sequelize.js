@@ -4,6 +4,10 @@ const pg = require("pg");
 const HapiSequelize = require("hapi-sequelizejs");
 const path = require("path");
 
+/**
+ * Create Sequelize instance and register into the Hapi server instance.
+ * @param {Object} server Hapi server instance
+ */
 const registerSequelize = async (server) => {
   const sequelize = new Sequelize(
     process.env.DB_DATABASE,
@@ -22,6 +26,7 @@ const registerSequelize = async (server) => {
         name: process.env.DB_DATABASE,
         models: [path.join(__dirname, "../models/*.js").replaceAll(/\\/g, "/")],
         sequelize,
+        // sync: true,
       },
     ],
   });
