@@ -1,0 +1,30 @@
+{
+	"message": {
+		"noAuthToken": "Authentication failed: No Authorization header",
+		"invalidAuthToken": "Authentication failed: Invalid token",
+		"createEmployeeSuccess": "Employee created successfully",
+		"createEmployeeMissingFields": "Invalid payload: The payload should have the following properties - (position, experience).",
+		"createEmployeeUnsupportedFields": "Invalid payload: Payload contains unsupported fields. It should contain only the following fields: name, position, team, experience",
+		"updateEmployeeSuccess": "Employee updated successfully",
+		"updateEmployeeUnsupportedFields": "Invalid payload: There are unsupported property - (hobby).",
+        "invalidEmployee": "Validation failed: Invalid employee id - invalid-id",
+        "employeeNotFound": "Employee - 9999 not found",
+        "deleteEmployeeSuccess": "Employee deleted successfully",
+		"createTaskSuccess": "Task created successfully",
+		"createTaskMissingFields": "Invalid payload: The payload should have the following property - (title).",
+		"createTaskUnsupportedFields": "Invalid payload: Payload contains unsupported fields - (employee_id, reporter). It should contain only the following fields: title, description, priority, labels, assigned_employee_id",
+		"invalidEmployeeIdInTask": "Invalid payload: No Employee matches the assigned_employee_id value.",
+		"invalidPriorityInTask": "Invalid payload: Priority value should be amoung any of these value - ('Low', 'Medium', 'High')",
+		"updateTaskSuccess": "Task updated successfully",
+		"updateTaskUnsupportedFields": "Invalid payload: There are unsupported properties - (employee_id, reporter).",
+        "invalidTask": "Validation failed: Invalid task id - invalid-id",
+        "taskNotFound": "Task - 9999 not found",
+        "deleteTaskSuccess": "Task deleted successfully",
+        "notFoundRoute": "API route not available"
+	},
+	"name": {
+		"BadRequest": "Bad Request",
+		"Unauthorized": "Unauthorized",
+		"NotFound": "Not Found"
+	}
+}
