@@ -160,8 +160,14 @@ describe("Task module (create & get all task)", () => {
 		expect(payload?.error).to.be.string().equal(OutputData.name.BadRequest);
 		expect(payload?.message).to.be.string().equal(OutputData.message.invalidQueryLimitForGet);
 	});
+	it("GET Tasks - Invalid query - offset", async () => {
+		const payload = await getTasksValid(server, "offset=y");
+		expect(payload?.statusCode).to.be.number().equal(400);
+		expect(payload?.error).to.be.string().equal(OutputData.name.BadRequest);
+		expect(payload?.message).to.be.string().equal(OutputData.message.invalidQueryOffsetForGet);
+	});
 	it("GET Tasks - Valid credentials with query params", async () => {
-		const payload = await getTasksValid(server, "limit=6&orderBy=newestFirst");
+		const payload = await getTasksValid(server, "limit=15&offset=5&orderBy=newestFirst");
 		expect(payload?.statusCode).to.be.number().equal(200);
 		expect(payload?.data).to.be.array();
 	});
@@ -176,9 +182,7 @@ describe("Task module (update, delete & get by ID)", () => {
 		server = await startServer();
 		const employees = await getEmployeesValid(server);
 		const tasks = await getTasksValid(server);
-		employeeId = employees?.data?.find(
-			(record) => record.name === InputData.postTaskValid.name
-		)?.id;
+		employeeId = employees?.data[0].id;
 		taskId = tasks?.data?.find(
 			(record) => record.name === InputData.postTaskValid.name
 		)?.id;

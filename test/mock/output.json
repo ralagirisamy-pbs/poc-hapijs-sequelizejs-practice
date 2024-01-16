@@ -7,6 +7,7 @@
 		"createEmployeeUnsupportedFields": "Invalid payload: Payload contains unsupported fields. It should contain only the following fields: name, position, team, experience",
 		"invalidQueryOrderByForGet": "Validation failed: Query - orderBy should be either 'newestFirst' or 'oldestFirst'",
 		"invalidQueryLimitForGet": "Validation failed: Query - limit should be an integer",
+		"invalidQueryOffsetForGet": "Validation failed: Query - offset should be an integer",
 		"updateEmployeeSuccess": "Employee updated successfully",
 		"updateEmployeeUnsupportedFields": "Invalid payload: There are unsupported property - (hobby).",
         "invalidEmployee": "Validation failed: Invalid employee id - invalid-id",

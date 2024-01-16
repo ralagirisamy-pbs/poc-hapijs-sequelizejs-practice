@@ -25,7 +25,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:3000/employees?includeTasks&limit=5&orderBy=oldestFirst",
+							"raw": "http://localhost:3000/employees?includeTasks&orderBy=oldestFirst&offset=5&limit=15",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -40,12 +40,16 @@
 									"value": null
 								},
 								{
-									"key": "limit",
+									"key": "orderBy",
+									"value": "oldestFirst"
+								},
+								{
+									"key": "offset",
 									"value": "5"
 								},
 								{
-									"key": "orderBy",
-									"value": "oldestFirst"
+									"key": "limit",
+									"value": "15"
 								}
 							]
 						}
@@ -112,7 +116,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Peter\",\r\n    \"position\": \"Software Engineer\",\r\n    \"experience\": 5,\r\n    \"team\": \"MBANK\"\r\n}"
+							"raw": "{\r\n    \"name\": \"Jack\",\r\n    \"position\": \"Software Engineer\",\r\n    \"experience\": 5,\r\n    \"team\": \"MBANK\"\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:3000/employee",
@@ -148,7 +152,7 @@
 							"raw": "{\r\n    \"position\": \"Senior Staff engineer\",\r\n    \"experience\": 9.5\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/employee/4",
+							"raw": "http://localhost:3000/employee/18",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -156,7 +160,7 @@
 							"port": "3000",
 							"path": [
 								"employee",
-								"4"
+								"18"
 							]
 						}
 					},
@@ -290,7 +294,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"INC4374 - some issue\",\r\n    \"labels\": \"bug\",\r\n    \"priority\": \"High\",\r\n    \"assigned_employee_id\": 3\r\n}"
+							"raw": "{\r\n    \"title\": \"INC4374 - some issue\",\r\n    \"labels\": \"bug\",\r\n    \"priority\": \"High\"\r\n}"
 						},
 						"url": {
 							"raw": "http://localhost:3000/task",
