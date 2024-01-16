@@ -86,7 +86,7 @@ describe("Task module (create & get all task)", () => {
 		expect(payload?.error).to.be.string().equal(OutputData.name.BadRequest);
 		expect(payload?.message)
 			.to.be.string()
-			.equal(OutputData.message.createTaskUnsupportedFields);
+			.equal(OutputData.message.unsupportedFieldsInTask);
 	});
 	it("POST Task - Unsupported Priority value", async () => {
 		const options = {
@@ -220,7 +220,7 @@ describe("Task module (update, delete & get by ID)", () => {
 		expect(payload?.error).to.be.string().equal(OutputData.name.BadRequest);
 		expect(payload?.message)
 			.to.be.string()
-			.equal(OutputData.message.updateTaskUnsupportedFields);
+			.equal(OutputData.message.unsupportedFieldsInTask);
 	});
 	it("PUT Task - Unsupported Priority value", async () => {
 		const options = {

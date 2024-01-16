@@ -20,6 +20,33 @@ const validatePriority = (payload) => {
     }
   }
 };
+
+/**
+ * Check the payload for any unsupported fields. If any, throw ValidationError.
+ * @param {object} payload Incoming request payload
+ */
+const checkUnsupportedFields = (payload, formattedPayload) => {
+  const unsupportedFields = [];
+  // Filter the supported fields
+  Object.keys(payload).forEach((key) => {
+    if (TASK_FIELDS.includes(key)) {
+      formattedPayload[key] = payload[key];
+    } else {
+      unsupportedFields.push(key);
+    }
+  });
+  // If payload has some unsupported fields, throw Validation error.
+  if (Object.keys(unsupportedFields).length > 0) {
+    throw new ValidationError(
+      `Invalid payload: Payload contains unsupported field/s - (${unsupportedFields.join(
+        ", ",
+      )}). It should contain only the following fields: ${TASK_FIELDS.join(
+        ", ",
+      )}`,
+    );
+  }
+};
+
 /**
  * Validate the payload for create task API.
  * @param {object} payload Object containing task data to be created.
@@ -27,7 +54,6 @@ const validatePriority = (payload) => {
  */
 const formatPayloadForCreate = (payload) => {
   const taskData = {};
-  const unsupportedFields = [];
   const missingFields = [];
   // Iterate through mandatory task fields and check if payload has the property.
   MANDATORY_TASK_FIELDS.forEach((key) => {
@@ -43,24 +69,7 @@ const formatPayloadForCreate = (payload) => {
       } - (${missingFields.join(", ")}).`,
     );
   }
-  // Filter the supported fields
-  Object.keys(payload).forEach((key) => {
-    if (TASK_FIELDS.includes(key)) {
-      taskData[key] = payload[key];
-    } else {
-      unsupportedFields.push(key);
-    }
-  });
-  // If payload has some unsupported fields, throw Validation error.
-  if (Object.keys(unsupportedFields).length > 0) {
-    throw new ValidationError(
-      `Invalid payload: Payload contains unsupported fields - (${unsupportedFields.join(
-        ", ",
-      )}). It should contain only the following fields: ${TASK_FIELDS.join(
-        ", ",
-      )}`,
-    );
-  }
+  checkUnsupportedFields(payload, taskData);
   validatePriority(payload);
   // Convert Labels into array if it is a string
   if (typeof payload.labels === "string") {
@@ -76,23 +85,8 @@ const formatPayloadForCreate = (payload) => {
  */
 const formatPayloadForUpdate = (payload) => {
   const taskData = {};
-  const unsupportedFields = [];
   // Filter out the supported fields.
-  Object.keys(payload).forEach((key) => {
-    if (TASK_FIELDS.includes(key)) {
-      taskData[key] = payload[key];
-    } else {
-      unsupportedFields.push(key);
-    }
-  });
-  // If payload has some unsupported fields, throw Validation error.
-  if (unsupportedFields.length > 0) {
-    throw new ValidationError(
-      `Invalid payload: There are unsupported ${
-        unsupportedFields.length > 1 ? "properties" : "property"
-      } - (${unsupportedFields.join(", ")}).`,
-    );
-  }
+  checkUnsupportedFields(payload, taskData);
   validatePriority(payload);
   // Convert Labels into array if it is a string
   if (typeof payload.labels === "string") {
