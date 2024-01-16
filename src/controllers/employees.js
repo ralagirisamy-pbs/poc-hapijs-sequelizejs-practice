@@ -2,8 +2,10 @@ const { HTTP_STATUS } = require("../lib/constants");
 const {
   formatPayloadForCreate,
   formatPayloadForUpdate,
-  formatQueryParamsForGet,
 } = require("../services/validations/employee");
+const {
+  validateQueryParams,
+} = require("../services/validations/query-handler");
 const { NotFoundError, ValidationError } = require("../lib/error");
 const dbHandler = require("../services/db-handler");
 
@@ -14,7 +16,7 @@ const dbHandler = require("../services/db-handler");
  */
 const getAllEmployees = async (request, h) => {
   try {
-    const queryParams = formatQueryParamsForGet(request.query);
+    const queryParams = validateQueryParams(request.query);
     const models = request.getDb().getModels();
     const employeeRecords = await dbHandler.getRecords(
       models.Employee,
@@ -46,7 +48,7 @@ const getAllEmployees = async (request, h) => {
 const getEmployeeById = async (request, h) => {
   const { params } = request;
   try {
-    const queryParams = formatQueryParamsForGet(request.query);
+    const queryParams = validateQueryParams(request.query);
     const models = request.getDb().getModels();
     const id = parseInt(params.id, 10);
     if (!id) {

@@ -1,5 +1,3 @@
-const { employeeAssociationQuery } = require("../lib/constants");
-
 /**
  * Convert the DB response into plain object
  * @param {Object} data Response object
@@ -56,7 +54,7 @@ const getRecordById = (id, Model, queryParams = {}) => {
     where: {
       id,
     },
-    ...(queryParams.includeTasks ? employeeAssociationQuery : {}),
+    ...queryParams,
   };
   return Model.findOne(query).then(formatOutput);
 };
@@ -67,8 +65,8 @@ const getRecordById = (id, Model, queryParams = {}) => {
  * @param {object} queryParams Request query paramter
  */
 const getRecords = (Model, queryParams = {}) =>
-  Model.findAll(queryParams.includeTasks ? employeeAssociationQuery : {}).then(
-    (queryResponse) => queryResponse.map(formatOutput),
+  Model.findAll(queryParams).then((queryResponse) =>
+    queryResponse.map(formatOutput),
   );
 
 module.exports = {

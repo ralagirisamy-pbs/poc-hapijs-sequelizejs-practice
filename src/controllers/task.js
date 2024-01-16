@@ -4,6 +4,9 @@ const {
   formatPayloadForUpdate,
   validateAssignedEmployee,
 } = require("../services/validations/task");
+const {
+  validateQueryParams,
+} = require("../services/validations/query-handler");
 const { NotFoundError, ValidationError } = require("../lib/error");
 const dbHandler = require("../services/db-handler");
 
@@ -14,8 +17,9 @@ const dbHandler = require("../services/db-handler");
  */
 const getAllTasks = async (request, h) => {
   try {
+    const queryParams = validateQueryParams(request.query);
     const models = request.getDb().getModels();
-    const taskRecords = await dbHandler.getRecords(models.Task);
+    const taskRecords = await dbHandler.getRecords(models.Task, queryParams);
     if (taskRecords.length === 0) {
       throw new NotFoundError(`No Task found`);
     }

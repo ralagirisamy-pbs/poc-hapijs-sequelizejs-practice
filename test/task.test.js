@@ -143,8 +143,25 @@ describe("Task module (create & get all task)", () => {
 		expect(payload?.error).to.be.string().equal(OutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(OutputData.message.invalidAuthToken);
 	});
-	it("GET Tasks - Valid credentials", async () => {
+	it("GET Tasks - Valid credentials without query params", async () => {
 		const payload = await getTasksValid(server);
+		expect(payload?.statusCode).to.be.number().equal(200);
+		expect(payload?.data).to.be.array();
+	});
+	it("GET Tasks - Invalid query - orderBy", async () => {
+		const payload = await getTasksValid(server, "orderBy=sortbyid");
+		expect(payload?.statusCode).to.be.number().equal(400);
+		expect(payload?.error).to.be.string().equal(OutputData.name.BadRequest);
+		expect(payload?.message).to.be.string().equal(OutputData.message.invalidQueryOrderByForGet);
+	});
+	it("GET Tasks - Invalid query - limit", async () => {
+		const payload = await getTasksValid(server, "limit=x");
+		expect(payload?.statusCode).to.be.number().equal(400);
+		expect(payload?.error).to.be.string().equal(OutputData.name.BadRequest);
+		expect(payload?.message).to.be.string().equal(OutputData.message.invalidQueryLimitForGet);
+	});
+	it("GET Tasks - Valid credentials with query params", async () => {
+		const payload = await getTasksValid(server, "limit=6&orderBy=newestFirst");
 		expect(payload?.statusCode).to.be.number().equal(200);
 		expect(payload?.data).to.be.array();
 	});

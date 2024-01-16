@@ -108,8 +108,25 @@ describe("Employee module (create & get all employee)", () => {
 		expect(payload?.error).to.be.string().equal(OutputData.name.Unauthorized);
 		expect(payload?.message).to.be.string().equal(OutputData.message.invalidAuthToken);
 	});
-	it("GET Employees - Valid credentials", async () => {
+	it("GET Employees - Valid credentials without query params", async () => {
 		const payload = await getEmployeesValid(server);
+		expect(payload?.statusCode).to.be.number().equal(200);
+		expect(payload?.data).to.be.array();
+	});
+	it("GET Employees - Invalid query - orderBy", async () => {
+		const payload = await getEmployeesValid(server, "orderBy=sortbyid");
+		expect(payload?.statusCode).to.be.number().equal(400);
+		expect(payload?.error).to.be.string().equal(OutputData.name.BadRequest);
+		expect(payload?.message).to.be.string().equal(OutputData.message.invalidQueryOrderByForGet);
+	});
+	it("GET Employees - Invalid query - limit", async () => {
+		const payload = await getEmployeesValid(server, "limit=x");
+		expect(payload?.statusCode).to.be.number().equal(400);
+		expect(payload?.error).to.be.string().equal(OutputData.name.BadRequest);
+		expect(payload?.message).to.be.string().equal(OutputData.message.invalidQueryLimitForGet);
+	});
+	it("GET Employees - Valid credentials with query params", async () => {
+		const payload = await getEmployeesValid(server, "includeTasks&limit=6&orderBy=newestFirst");
 		expect(payload?.statusCode).to.be.number().equal(200);
 		expect(payload?.data).to.be.array();
 	});

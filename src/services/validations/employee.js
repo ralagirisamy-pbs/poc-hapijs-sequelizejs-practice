@@ -62,35 +62,7 @@ const formatPayloadForUpdate = (payload) => {
   return employeeData;
 };
 
-/**
- * Verify the query params and return the formatted one.
- * @param {*} query The incoming query params from the user.
- * @return {Object} formatted query params.
- */
-const formatQueryParamsForGet = (query) => {
-  if (Object.keys(query).length === 0) {
-    return {
-      includeTasks: false,
-    };
-  }
-  if (
-    Object.keys(query).length > 1 ||
-    (Object.keys(query).length === 1 && typeof query.includeTasks !== "string")
-  ) {
-    throw new ValidationError(
-      "Validation failed: Unsupported query param/s. The only supported param is includeTasks",
-    );
-  }
-  if (!["true", "false"].includes(query.includeTasks)) {
-    throw new ValidationError(
-      "Validation failed: Query param - includeTasks should either be 'true' or 'false'",
-    );
-  }
-  return { includeTasks: query.includeTasks === "true" };
-};
-
 module.exports = {
   formatPayloadForCreate,
   formatPayloadForUpdate,
-  formatQueryParamsForGet,
 };
