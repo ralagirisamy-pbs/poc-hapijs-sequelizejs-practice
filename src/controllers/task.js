@@ -2,7 +2,8 @@ const { HTTP_STATUS } = require("../lib/constants");
 const {
   formatPayloadForCreate,
   formatPayloadForUpdate,
-} = require("../services/validations/employee");
+  validateAssignedEmployee,
+} = require("../services/validations/task");
 const {
   validateQueryParams,
 } = require("../services/validations/query-handler");
@@ -10,187 +11,187 @@ const { NotFoundError, ValidationError } = require("../lib/error");
 const dbHandler = require("../services/db-handler");
 
 /**
- * Get all Employees data.
+ * Get all Task data.
  * @param {Object} request - Request Object with all input details
  * @param {Object} h - h Object with required functions to write server responses
  */
-const getAllEmployees = async (request, h) => {
+const getAllTasks = async (request, h) => {
   try {
     const queryParams = validateQueryParams(request.query);
     const models = request.getDb().getModels();
-    const employeeRecords = await dbHandler.getRecords(
-      models.Employee,
-      queryParams,
-    );
-    if (employeeRecords.length === 0) {
-      throw new NotFoundError(`No Employees found`);
+    const taskRecords = await dbHandler.getRecords(models.Task, queryParams);
+    if (taskRecords.length === 0) {
+      throw new NotFoundError(`No Task found`);
     }
     return h
       .response({
         statusCode: HTTP_STATUS.OK,
-        data: employeeRecords,
+        data: taskRecords,
       })
       .code(HTTP_STATUS.OK);
   } catch (error) {
-    console.error("Error caught at getAllEmployees:", error);
+    console.error("Error caught at getAllTasks:", error);
     if (error.name) {
       throw error;
     }
-    throw Error("Internal Server error: Couldn't get the employees");
+    throw Error("Internal Server error: Couldn't get tasks");
   }
 };
 
 /**
- * Get Employee data by ID.
+ * Get Task data by ID.
  * @param {Object} request - Request Object with all input details
  * @param {Object} h - h Object with required functions to write server responses
  */
-const getEmployeeById = async (request, h) => {
+const getTaskById = async (request, h) => {
   const { params } = request;
   try {
-    const queryParams = validateQueryParams(request.query);
     const models = request.getDb().getModels();
     const id = parseInt(params.id, 10);
     if (!id) {
       throw new ValidationError(
-        `Validation failed: Invalid employee id - ${params.id}`,
+        `Validation failed: Invalid task id - ${params.id}`,
       );
     }
-    const employeeRecord = await dbHandler.getRecordById(
-      id,
-      models.Employee,
-      queryParams,
-    );
-    if (!employeeRecord) {
-      throw new NotFoundError(`Employee - ${id} not found`);
+    const taskRecord = await dbHandler.getRecordById(id, models.Task);
+    if (!taskRecord) {
+      throw new NotFoundError(`Task - ${id} not found`);
     }
     return h
-      .response({ statusCode: HTTP_STATUS.OK, data: employeeRecord })
+      .response({ statusCode: HTTP_STATUS.OK, data: taskRecord })
       .code(HTTP_STATUS.OK);
   } catch (error) {
-    console.error("Error caught at getEmployeeById:", error);
+    console.error("Error caught at getTaskById:", error);
     if (error.name) {
       throw error;
     }
-    throw Error(
-      `Internal Server error: Couldn't get the employee - ${params.id}`,
-    );
+    throw Error(`Internal Server error: Couldn't get the task - ${params.id}`);
   }
 };
 
 /**
- * Create an Employee record.
+ * Create an Task record.
  * @param {Object} request - Request Object with all input details
  * @param {Object} h - h Object with required functions to write server responses
  */
-const createEmployee = async (request, h) => {
+const createTask = async (request, h) => {
   try {
     const { payload } = request;
     const formattedPayload = formatPayloadForCreate(payload);
     const models = request.getDb().getModels();
-    const employeeRecord = await dbHandler.createRecord(
-      formattedPayload,
+    // Verify the assiciated employee
+    await validateAssignedEmployee(
+      formattedPayload.assigned_employee_id,
       models.Employee,
+    );
+    const taskRecord = await dbHandler.createRecord(
+      formattedPayload,
+      models.Task,
     );
     return h
       .response({
         statusCode: HTTP_STATUS.CREATED,
-        message: "Employee created successfully",
-        data: employeeRecord,
+        message: "Task created successfully",
+        data: taskRecord,
       })
       .code(HTTP_STATUS.CREATED);
   } catch (error) {
-    console.error("Error caught at createEmployee:", error);
+    console.error("Error caught at createTask:", error);
     if (error.name) {
       throw error;
     }
-    throw Error(`Internal Server error: Couldn't create the employee`);
+    throw Error(`Internal Server error: Couldn't create the task`);
   }
 };
 
 /**
- * Update the Employee record.
+ * Update the Task record.
  * @param {Object} request - Request Object with all input details
  * @param {Object} h - h Object with required functions to write server responses
  */
-const updateEmployee = async (request, h) => {
+const updateTask = async (request, h) => {
   const { params } = request;
   try {
     const { payload } = request;
     const id = parseInt(params.id, 10);
     if (!id) {
       throw new ValidationError(
-        `Validation failed: Invalid employee id - ${params.id}`,
+        `Validation failed: Invalid task id - ${params.id}`,
       );
     }
     const formattedPayload = formatPayloadForUpdate(payload);
     const models = request.getDb().getModels();
+    // Verify the assiciated employee
+    await validateAssignedEmployee(
+      formattedPayload.assigned_employee_id,
+      models.Employee,
+    );
     const response = await dbHandler.updateRecord(
       id,
       formattedPayload,
-      models.Employee,
+      models.Task,
     );
     if (response[0] === 0) {
-      throw new NotFoundError(`Employee - ${params.id} not found`);
+      throw new NotFoundError(`Task - ${params.id} not found`);
     }
     return h
       .response({
         statusCode: HTTP_STATUS.CREATED,
-        message: "Employee updated successfully",
+        message: "Task updated successfully",
         data: response[1],
       })
       .code(HTTP_STATUS.CREATED);
   } catch (error) {
-    console.error("Error caught at updateEmployee:", error);
+    console.error("Error caught at updateTask:", error);
     if (error.name) {
       throw error;
     }
     throw Error(
-      `Internal Server error: Couldn't update the employee - ${params.id}`,
+      `Internal Server error: Couldn't update the task - ${params.id}`,
     );
   }
 };
 
 /**
- * Delete the Employee of the given ID.
+ * Delete the Task of the given ID.
  * @param {Object} request - Request Object with all input details
  * @param {Object} h - h Object with required functions to write server responses
  */
-const deleteEmployee = async (request, h) => {
+const deleteTask = async (request, h) => {
   const { params } = request;
   try {
     const models = request.getDb().getModels();
     const id = parseInt(params.id, 10);
     if (!id) {
       throw new ValidationError(
-        `Validation failed: Invalid employee id - ${params.id}`,
+        `Validation failed: Invalid task id - ${params.id}`,
       );
     }
-    const response = await dbHandler.deleteRecord(id, models.Employee);
+    const response = await dbHandler.deleteRecord(id, models.Task);
     if (response === 0) {
-      throw new NotFoundError(`Employee - ${params.id} not found`);
+      throw new NotFoundError(`Task - ${params.id} not found`);
     }
     return h
       .response({
         statusCode: HTTP_STATUS.OK,
-        message: "Employee deleted successfully",
+        message: "Task deleted successfully",
       })
       .code(HTTP_STATUS.OK);
   } catch (error) {
-    console.error("Error caught at deleteEmployee:", error);
+    console.error("Error caught at deleteTask:", error);
     if (error.name) {
       throw error;
     }
     throw Error(
-      `Internal Server error: Couldn't delete the employee - ${params.id}`,
+      `Internal Server error: Couldn't delete the task - ${params.id}`,
     );
   }
 };
 
 module.exports = {
-  getAllEmployees,
-  getEmployeeById,
-  createEmployee,
-  updateEmployee,
-  deleteEmployee,
+  getAllTasks,
+  getTaskById,
+  createTask,
+  updateTask,
+  deleteTask,
 };

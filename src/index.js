@@ -2,7 +2,10 @@ require("dotenv").config();
 const hapi = require("@hapi/hapi");
 const { DEFAULT_HOST, DEFAULT_PORT } = require("./lib/constants");
 const EmployeeRoute = require("./routes/employee");
+const TaskRoute = require("./routes/task");
+const GenericRoute = require("./routes/generic");
 const LifecycleHooks = require("./lib/hooks");
+const { registerSequelize } = require("./config/sequelize");
 
 let server;
 
@@ -17,7 +20,14 @@ const startServer = async () => {
       host: process.env.HOST || DEFAULT_HOST,
     });
     // Registering the required plugins for oute and lifecycle hooks.
-    await server.register([EmployeeRoute, LifecycleHooks]);
+    await server.register([
+      EmployeeRoute,
+      TaskRoute,
+      GenericRoute,
+      LifecycleHooks,
+    ]);
+    // register Sequelize instance
+    await registerSequelize(server);
     // Default authentication strategy
     server.auth.default();
     // Starting the server.

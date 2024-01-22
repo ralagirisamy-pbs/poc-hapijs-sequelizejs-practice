@@ -1,0 +1,80 @@
+{
+	"postEmployeeValid": {
+		"name": "Test user 1",
+		"position": "Software Engineer",
+		"team": "Testing 1",
+		"experience": 4
+	},
+	"postEmployeeMissingMandatoryFields": {
+		"name": "Test user 1",
+		"team": "Testing 1"
+	},
+	"postEmployeeUnsupportedFields": {
+		"name": "Test user 1",
+		"position": "Software Engineer",
+		"team": "Testing 1",
+		"experience": 4,
+		"age": 25,
+		"hobby": "sample"
+	},
+	"putEmployeeValid": {
+		"name": "Test user 2",
+		"team": "Testing 2"
+	},
+	"putEmployeeUnsupportedFields": {
+		"name": "Test user 2",
+		"hobby": "sample"
+	},
+	"postTaskValid": {
+		"title": "Test task 1",
+		"description": "Test description 1",
+		"priority": "Low",
+		"labels": "Label 1"
+	},
+	"postTaskMissingMandatoryFields": {
+		"description": "Test description 1",
+		"priority": "Low"
+	},
+	"postTaskUnsupportedFields": {
+		"title": "Test task 1",
+		"description": "Test description 1",
+		"priority": "Low",
+		"labels": "Label 1",
+        "employee_id": "Test value",
+        "reporter": "Test reporter"
+	},
+    "postTaskInvalidPriority": {
+		"title": "Test task 1",
+		"description": "Test description 1",
+		"priority": "Test value",
+		"labels": "Label 1"
+    },
+    "postTaskInvalidEmployeeId": {
+		"title": "Test task 1",
+		"description": "Test description 1",
+		"priority": "Low",
+		"labels": "Label 1",
+        "assigned_employee_id": "999"
+    },
+	"putTaskValid": {
+		"priority": "Low",
+		"labels": "Label 1"
+	},
+	"putTaskUnsupportedFields": {
+		"title": "Test task 2",
+		"employee_id": "Test value",
+        "reporter": "Test reporter"
+	},
+    "putTaskInvalidPriority": {
+        "priority": "Test value"
+    },
+    "putTaskInvalidEmployeeId": {
+        "assigned_employee_id": "999"
+    },
+	"invalidId": "invalid-id",
+	"nonexistentId": 9999,
+	"authToken": {
+		"valid": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJzY29wZSI6ImFsbCJ9.yBvyRs6xaw7EhKNSmdorAGrg1PrH0SzMCgKx36hXfNw",
+		"invalid": "some-invalid-token"
+	}
+}
